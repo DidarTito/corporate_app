@@ -1,10 +1,9 @@
-import 'package:corporate_app/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'profile_edit_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/profile_card.dart';
-import '../data/mock_data.dart';
+import '../data/mock_data.dart'; // This imports User class and mockUser getter
 import '../providers/settings_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -12,13 +11,18 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = mockUser;
+    final user = mockUser; // Use the getter function
     final settings = Provider.of<SettingsProvider>(context);
+    
+    // Используем email из логина, если он есть, иначе из mock данных
+    final loginEmail = settings.loginEmail.isNotEmpty 
+        ? settings.loginEmail 
+        : user.email;
     
     // Merge mock user with editable data from settings
     final mergedUser = user.copyWith(
       phoneNumber: settings.userData['phoneNumber'] ?? user.phoneNumber,
-      email: settings.userData['email'] ?? user.email,
+      email: loginEmail, // Используем email из логина
       clothingSize: settings.userData['clothingSize'] ?? user.clothingSize,
       shoeSize: settings.userData['shoeSize'] ?? user.shoeSize,
     );
@@ -28,6 +32,29 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Debug info (можно убрать в релизе)
+            if (settings.loginEmail.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              Card(
+                elevation: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info_outline, size: 16, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Logged in as: ${settings.loginEmail}',
+                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            
             // Full Profile Card with updated data
             ProfileCard(
               user: mergedUser,
@@ -39,13 +66,16 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  // Ожидаем результат редактирования
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProfileEditScreen(user: mergedUser),
                     ),
                   );
+                  // Принудительно обновляем состояние
+                  // Provider автоматически обновит через notifyListeners
                 },
                 icon: const Icon(Icons.edit),
                 label: const Padding(
@@ -84,28 +114,6 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Extension to copy User with updated fields
-extension UserCopyWith on User {
-  User copyWith({
-    String? phoneNumber,
-    String? email,
-    String? clothingSize,
-    String? shoeSize,
-  }) {
-    return User(
-      id: id,
-      username: username,
-      email: email ?? this.email,
-      fullName: fullName,
-      iin: iin,
-      position: position,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      clothingSize: clothingSize ?? this.clothingSize,
-      shoeSize: shoeSize ?? this.shoeSize,
     );
   }
 }

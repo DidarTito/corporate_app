@@ -28,8 +28,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     super.initState();
     final settings = Provider.of<SettingsProvider>(context, listen: false);
     
+    // Используем email из логина, если он есть, иначе из настроек
+    final loginEmail = settings.loginEmail.isNotEmpty 
+        ? settings.loginEmail 
+        : (settings.userData['email'] ?? widget.user.email);
+    
     _phoneController = TextEditingController(text: settings.userData['phoneNumber']);
-    _emailController = TextEditingController(text: settings.userData['email']);
+    _emailController = TextEditingController(text: loginEmail); // Используем email из логина
     _clothingSizeController = TextEditingController(text: settings.userData['clothingSize']);
     _shoeSizeController = TextEditingController(text: settings.userData['shoeSize']);
   }
@@ -42,15 +47,22 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     _shoeSizeController.dispose();
     super.dispose();
   }
-  
   void _saveChanges(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
     
+    // Получаем новый email
+    final newEmail = _emailController.text.trim();
+    
     // Update user data
     settings.updateUserData('phoneNumber', _phoneController.text);
-    settings.updateUserData('email', _emailController.text);
+    settings.updateUserData('email', newEmail);
     settings.updateUserData('clothingSize', _clothingSizeController.text);
     settings.updateUserData('shoeSize', _shoeSizeController.text);
+    
+    // Обновляем loginEmail если он отличается
+    if (settings.loginEmail != newEmail) {
+      settings.saveLoginEmail(newEmail);
+    }
     
     // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
@@ -90,6 +102,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final settings = Provider.of<SettingsProvider>(context);
+    
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Edit Profile',
@@ -163,6 +177,28 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       Icons.directions_walk,
                     ),
                     
+                    // Email source info (debug, можно убрать)
+                    if (settings.loginEmail.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Divider(color: theme.colorScheme.primary.withOpacity(0.2)),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Icon(Icons.info_outline, size: 16, color: AppColors.info),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Email from login: ${settings.loginEmail}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.info,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    
                     // Save Button (inside card)
                     const SizedBox(height: 30),
                     SizedBox(
@@ -199,13 +235,26 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     Icon(Icons.info_outline, color: AppColors.info, size: 24),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        'Note: IIN, Full Name, and Position are managed by HR department and cannot be changed here.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.info,
-                          height: 1.4,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Note: IIN, Full Name, and Position are managed by HR department and cannot be changed here.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.info,
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Email can be edited but will be used for future logins.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.info.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
