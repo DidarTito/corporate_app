@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
 import '../models/notification_model.dart';
-import '../utils/constants.dart';
 
 class NotificationDetailsScreen extends StatelessWidget {
   final NotificationItem notification;
@@ -13,6 +12,7 @@ class NotificationDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'NOTIFICATION',
@@ -40,18 +40,19 @@ class NotificationDetailsScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Date:',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppColors.textSecondary,
+                                color: theme.colorScheme.onSurface.withOpacity(0.6),
                               ),
                             ),
                             Text(
                               '${notification.date.day}/${notification.date.month}/${notification.date.year}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -59,18 +60,19 @@ class NotificationDetailsScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            const Text(
+                            Text(
                               'Time:',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppColors.textSecondary,
+                                color: theme.colorScheme.onSurface.withOpacity(0.6),
                               ),
                             ),
                             Text(
                               '${notification.date.hour.toString().padLeft(2, '0')}:${notification.date.minute.toString().padLeft(2, '0')}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -80,61 +82,61 @@ class NotificationDetailsScreen extends StatelessWidget {
                     const SizedBox(height: 24),
                     
                     // From
-                    const Text(
+                    Text(
                       'From:',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     Text(
                       notification.sender,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 24),
                     
                     // Title
-                    const Text(
+                    Text(
                       'Title:',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     Text(
                       notification.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryBlue,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 24),
                     
                     // Description (maximized)
-                    const Text(
+                    Text(
                       'Description:',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.backgroundLight,
+                        color: theme.colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         notification.description,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                           height: 1.5,
                         ),
                       ),
@@ -142,22 +144,22 @@ class NotificationDetailsScreen extends StatelessWidget {
                     
                     // Type
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       'Type:',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     Chip(
                       label: Text(
                         notification.type.toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                         ),
                       ),
-                      backgroundColor: AppColors.primaryBlue,
+                      backgroundColor: theme.colorScheme.primary,
                     ),
                   ],
                 ),
