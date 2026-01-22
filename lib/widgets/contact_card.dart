@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
 
 class ContactCard extends StatelessWidget {
   final String department;
@@ -19,6 +18,7 @@ class ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -37,10 +37,10 @@ class ContactCard extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryBlue.withOpacity(0.1),
+                    color: theme.colorScheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(icon, color: AppColors.primaryBlue),
+                  child: Icon(icon, color: theme.colorScheme.primary),
                 ),
                 const SizedBox(width: 16),
                 
@@ -51,18 +51,18 @@ class ContactCard extends StatelessWidget {
                     children: [
                       Text(
                         department,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         phoneNumber,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: AppColors.textSecondary,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
                       ),
                     ],
@@ -76,9 +76,9 @@ class ContactCard extends StatelessWidget {
               padding: const EdgeInsets.only(top: 12, left: 66),
               child: Text(
                 description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.grey,
+                  color: theme.colorScheme.onSurface.withOpacity(0.5),
                 ),
               ),
             ),
@@ -91,11 +91,6 @@ class ContactCard extends StatelessWidget {
                 icon: const Icon(Icons.call, size: 16),
                 label: const Text('CALL'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryBlue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 10,
