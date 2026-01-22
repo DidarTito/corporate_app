@@ -1,8 +1,13 @@
+import 'package:corporate_app/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'notifications_screen.dart';
 import 'profile_edit_screen.dart';
 import 'settings_screen.dart';
+import '../widgets/home_app_bar.dart';
 import '../widgets/profile_card.dart';
 import '../data/mock_data.dart';
+import '../providers/settings_provider.dart';
 import '../utils/constants.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -11,20 +16,29 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = mockUser;
+    final settings = Provider.of<SettingsProvider>(context);
+    
+    // Merge mock user with editable data from settings
+    final mergedUser = user.copyWith(
+      phoneNumber: settings.userData['phoneNumber'] ?? user.phoneNumber,
+      email: settings.userData['email'] ?? user.email,
+      clothingSize: settings.userData['clothingSize'] ?? user.clothingSize,
+      shoeSize: settings.userData['shoeSize'] ?? user.shoeSize,
+    );
     
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Full Profile Card
+            // Full Profile Card with updated data
             ProfileCard(
-              user: user,
+              user: mergedUser,
               minimized: false,
             ),
             const SizedBox(height: 30),
             
-            // Edit Profile Button (ВОЗВРАЩАЕМ обратно!)
+            // Edit Profile Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -32,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProfileEditScreen(user: user),
+                      builder: (context) => ProfileEditScreen(user: mergedUser),
                     ),
                   );
                 },
@@ -86,6 +100,28 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// Extension to copy User with updated fields
+extension UserCopyWith on User {
+  User copyWith({
+    String? phoneNumber,
+    String? email,
+    String? clothingSize,
+    String? shoeSize,
+  }) {
+    return User(
+      id: id,
+      username: username,
+      email: email ?? this.email,
+      fullName: fullName,
+      iin: iin,
+      position: position,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      clothingSize: clothingSize ?? this.clothingSize,
+      shoeSize: shoeSize ?? this.shoeSize,
     );
   }
 }
