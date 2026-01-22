@@ -15,26 +15,23 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     
     return AppBar(
-      backgroundColor: isDarkMode ? const Color.fromARGB(255, 0, 0, 0) : AppColors.primaryBlue,
-      foregroundColor: Colors.white,
-      elevation: 2,
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      foregroundColor: theme.appBarTheme.foregroundColor,
+      elevation: theme.appBarTheme.elevation ?? 2,
       title: Row(
         children: [
-          const Icon(Icons.business, size: 24),
+          Icon(Icons.business, size: 24, color: theme.appBarTheme.iconTheme?.color ?? theme.appBarTheme.foregroundColor),
           const SizedBox(width: 8),
-          const Text(
+          Text(
             AppStrings.appName,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+            style: theme.appBarTheme.titleTextStyle,
           ),
           const Spacer(),
           IconButton(
-            icon: const Icon(Icons.notifications_outlined),
+            icon: Icon(Icons.notifications_outlined, 
+                color: theme.appBarTheme.iconTheme?.color ?? theme.appBarTheme.foregroundColor),
             onPressed: onNotificationPressed,
           ),
         ],
