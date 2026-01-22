@@ -27,8 +27,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.primaryBlue,
+      backgroundColor: theme.colorScheme.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -38,23 +39,23 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.colorScheme.onPrimary,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.business,
                 size: 60,
-                color: AppColors.primaryBlue,
+                color: theme.colorScheme.primary,
               ),
             ),
             const SizedBox(height: 20),
             // Название приложения
-            const Text(
+            Text(
               AppStrings.appName,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: theme.colorScheme.onPrimary,
               ),
             ),
           ],
