@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'notifications_screen.dart';
+import 'contacts_screen.dart';
+import 'help_screen.dart';
+import 'profile_screen.dart';
 import '../widgets/bottom_nav_bar.dart';
-import '../widgets/custom_app_bar.dart';
+import '../widgets/home_app_bar.dart';
+import '../widgets/profile_card.dart';
+import '../data/mock_data.dart';
 import '../utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,10 +19,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   
-  // Только 2 экрана: Home и Profile
+  // Теперь у нас 2 экрана: Home и Profile
   final List<Widget> _screens = [
     const _HomeContent(),
-    const _PlaceholderScreen(title: 'Profile Screen'),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -30,10 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: HomeAppBar(
         onNotificationPressed: () {
-          // TODO: Will implement in Commit 3
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Notifications screen will be added in next commit'),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NotificationsScreen(),
             ),
           );
         },
@@ -53,113 +59,158 @@ class _HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.home,
-            size: 64,
-            color: AppColors.primaryBlue,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Home Screen',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+    final user = mockUser;
+    
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Profile Card (Minimized) - клик переключает на Profile через BottomNav
+            ProfileCard(
+              user: user,
+              onPressed: () {
+                // Получаем родительский HomeScreenState и меняем selectedIndex
+                final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                if (homeState != null) {
+                  homeState.setState(() {
+                    homeState._selectedIndex = 1; // Переключаем на Profile
+                  });
+                }
+              },
+              minimized: true,
             ),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Profile card and quick actions\nwill be added in next commit',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
+            const SizedBox(height: 30),
+            
+            // Quick Actions Title
+            const Text(
+              'Quick Actions',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
             ),
-          ),
-          const SizedBox(height: 30),
-          // Help button
-          ElevatedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Help screen - will be accessed from Home'),
+            const SizedBox(height: 20),
+            
+            // Help and Contacts Buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Help Button
+                _ActionButton(
+                  icon: Icons.help_outline,
+                  label: 'Help',
+                  color: Colors.orange,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HelpScreen(),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-            icon: const Icon(Icons.help_outline),
-            label: const Text('Help'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Contacts button
-          ElevatedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Contacts screen - will be accessed from Home'),
+                
+                // Contacts Button
+                _ActionButton(
+                  icon: Icons.contacts,
+                  label: 'Contacts',
+                  color: Colors.green,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ContactsScreen(),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-            icon: const Icon(Icons.contacts),
-            label: const Text('Contacts'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 30),
+            
+            // Welcome Message
+            Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.business,
+                      size: 40,
+                      color: AppColors.primaryBlue,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Welcome to Corporate App',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Everything you need in one place',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// Заглушка для Profile Screen
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onPressed;
 
-  const _PlaceholderScreen({required this.title});
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: title,
-        showBackButton: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.person,
-              size: 64,
-              color: AppColors.primaryBlue,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Will be implemented in next commit',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
+    return Column(
+      children: [
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: color.withOpacity(0.3)),
+          ),
+          child: IconButton(
+            icon: Icon(icon, size: 36, color: color),
+            onPressed: onPressed,
+          ),
         ),
-      ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
