@@ -9,10 +9,14 @@ class SettingsProvider with ChangeNotifier {
   bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
   
+  // Login email (будет сохранен из логина)
+  String _loginEmail = '';
+  String get loginEmail => _loginEmail;
+  
   // User data
-  Map<String, String> _userData = {
+  final Map<String, String> _userData = {
     'phoneNumber': '+7 777 123 4567',
-    'email': 'john.doe@company.com',
+    'email': 'john.doe@company.com', // Дефолтный email
     'clothingSize': 'M',
     'shoeSize': '42',
   };
@@ -31,9 +35,21 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
   
+  // Save login email
+  void saveLoginEmail(String email) {
+    _loginEmail = email;
+    notifyListeners();
+  }
+  
   // Update user data
   void updateUserData(String key, String value) {
     _userData[key] = value;
+    
+    // Если обновляем email, обновляем и loginEmail
+    if (key == 'email') {
+      _loginEmail = value;
+    }
+    
     notifyListeners();
   }
   
@@ -59,6 +75,7 @@ class SettingsProvider with ChangeNotifier {
     // In real app, this would clear tokens and reset state
     _language = 'ru';
     _isDarkMode = false;
+    _loginEmail = '';
     notifyListeners();
   }
 }
