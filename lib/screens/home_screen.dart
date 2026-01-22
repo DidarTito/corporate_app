@@ -66,17 +66,17 @@ class _HomeContent extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Profile Card (Minimized) - клик переключает на Profile через BottomNav
+            // Profile Card (Minimized)
             ProfileCard(
               user: user,
               onPressed: () {
-                // Получаем родительский HomeScreenState и меняем selectedIndex
-                final homeState = context.findAncestorStateOfType<_HomeScreenState>();
-                if (homeState != null) {
-                  homeState.setState(() {
-                    homeState._selectedIndex = 1; // Переключаем на Profile
-                  });
-                }
+                // Просто переходим на ProfileScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
               },
               minimized: true,
             ),
