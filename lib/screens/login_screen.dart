@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'home_screen.dart';
+import '../providers/settings_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,27 +11,67 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  String? _emailError;
+  String? _passwordError;
 
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  bool _validateEmail(String email) {
+    // Basic email validation
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(email);
   }
 
-  void _login() {
-    final username = _usernameController.text.trim();
+  bool _validatePassword(String password) {
+    // At least 8 characters, contains letters and numbers
+    if (password.length < 8) return false;
+    
+    final hasLetters = RegExp(r'[a-zA-Z]').hasMatch(password);
+    final hasNumbers = RegExp(r'[0-9]').hasMatch(password);
+    
+    return hasLetters && hasNumbers;
+  }
+
+  void _validateForm() {
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+      
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      
+      if (email.isEmpty) {
+        _emailError = 'Email is required';
+      } else if (!_validateEmail(email)) {
+        _emailError = 'Please enter a valid email address';
+      }
+      
+      if (password.isEmpty) {
+        _passwordError = 'Password is required';
+      } else if (password.length < 8) {
+        _passwordError = 'Password must be at least 8 characters';
+      } else if (!_validatePassword(password)) {
+        _passwordError = 'Password must contain letters and numbers';
+      }
+    });
+  }
+
+  void _login(BuildContext context) {
+    final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
+    // Validate form
+    _validateForm();
+    
+    // Check if there are any errors
+    if (_emailError != null || _passwordError != null) {
       return;
     }
+
+    // Сохраняем email в провайдере
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    settings.saveLoginEmail(email);
 
     // Mock login
     Navigator.pushReplacement(
@@ -103,17 +145,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 32),
                     
-                    // Поле username
+                    // Поле email с валидацией
                     TextField(
-                      controller: _usernameController,
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        labelText: 'Username',
-                        prefixIcon: const Icon(Icons.person_outline),
+                        labelText: 'Email',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        hintText: 'your.email@company.com',
+                        errorText: _emailError,
+                        errorStyle: const TextStyle(fontSize: 12),
                       ),
+                      onChanged: (value) {
+                        if (_emailError != null) {
+                          _validateForm();
+                        }
+                      },
                     ),
                     const SizedBox(height: 20),
                     
-                    // Поле password
+                    // Поле password с валидацией
                     TextField(
                       controller: _passwordController,
                       obscureText: !_isPasswordVisible,
@@ -132,7 +183,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                         ),
+                        errorText: _passwordError,
+                        errorStyle: const TextStyle(fontSize: 12),
+                        helperText: 'At least 8 characters with letters and numbers',
+                        helperStyle: TextStyle(
+                          fontSize: 11,
+                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                        ),
                       ),
+                      onChanged: (value) {
+                        if (_passwordError != null) {
+                          _validateForm();
+                        }
+                      },
                     ),
                     const SizedBox(height: 30),
                     
@@ -140,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: () => _login(context),
                         child: const Text('LOGIN'),
                       ),
                     ),
@@ -156,6 +219,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: const Text('No account? Register'),
+                    ),
+                    
+                    // Password requirements
+                    const SizedBox(height: 16),
+                    Card(
+                      elevation: 0,
+                      color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Password Requirements:',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '• At least 8 characters\n• Must contain letters and numbers',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: theme.colorScheme.onSurface.withOpacity(0.5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
