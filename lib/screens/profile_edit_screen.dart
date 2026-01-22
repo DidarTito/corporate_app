@@ -54,9 +54,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     
     // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Profile updated successfully'),
-        backgroundColor: Colors.green,
+      SnackBar(
+        content: const Text('Profile updated successfully'),
+        backgroundColor: AppColors.success,
       ),
     );
     
@@ -89,6 +89,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Edit Profile',
@@ -112,21 +113,21 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryBlue.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(40),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.person,
                         size: 40,
-                        color: AppColors.primaryBlue,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 20),
                     
                     // Non-editable fields
-                    _buildReadOnlyField('IIN', widget.user.iin),
-                    _buildReadOnlyField('Full Name', widget.user.fullName),
-                    _buildReadOnlyField('Position', widget.user.position),
+                    _buildReadOnlyField(context, 'IIN', widget.user.iin),
+                    _buildReadOnlyField(context, 'Full Name', widget.user.fullName),
+                    _buildReadOnlyField(context, 'Position', widget.user.position),
                     
                     const SizedBox(height: 10),
                     const Divider(),
@@ -134,24 +135,28 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     
                     // Editable fields
                     _buildEditableField(
+                      context,
                       'Phone Number',
                       _phoneController,
                       TextInputType.phone,
                       Icons.phone,
                     ),
                     _buildEditableField(
+                      context,
                       'Email',
                       _emailController,
                       TextInputType.emailAddress,
                       Icons.email,
                     ),
                     _buildEditableField(
+                      context,
                       'Clothing Size',
                       _clothingSizeController,
                       TextInputType.text,
                       Icons.checkroom,
                     ),
                     _buildEditableField(
+                      context,
                       'Shoe Size',
                       _shoeSizeController,
                       TextInputType.text,
@@ -172,13 +177,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryBlue,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
                       ),
                     ),
                   ],
@@ -193,19 +191,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              color: Colors.blue.withOpacity(0.05),
+              color: AppColors.info.withOpacity(0.05),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.blue, size: 24),
+                    Icon(Icons.info_outline, color: AppColors.info, size: 24),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Note: IIN, Full Name, and Position are managed by HR department and cannot be changed here.',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.blue[800],
+                          color: AppColors.info,
                           height: 1.4,
                         ),
                       ),
@@ -220,7 +218,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     );
   }
   
-  Widget _buildReadOnlyField(String label, String value) {
+  Widget _buildReadOnlyField(BuildContext context, String label, String value) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -229,8 +228,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             flex: 1,
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -240,8 +239,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             flex: 2,
             child: Text(
               value,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -254,11 +253,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   }
   
   Widget _buildEditableField(
+    BuildContext context,
     String label,
     TextEditingController controller,
     TextInputType keyboardType,
     IconData icon,
   ) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -267,8 +268,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             flex: 1,
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -283,18 +284,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 10,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: AppColors.primaryBlue),
                 ),
                 prefixIcon: Icon(icon, size: 20),
                 isDense: true,
