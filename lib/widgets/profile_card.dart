@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
-import '../utils/constants.dart';
 
 class ProfileCard extends StatelessWidget {
   final User user;
@@ -17,13 +16,14 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (minimized) {
-      return _buildMinimizedCard();
+      return _buildMinimizedCard(context);
     } else {
-      return _buildFullCard();
+      return _buildFullCard(context);
     }
   }
 
-  Widget _buildMinimizedCard() {
+  Widget _buildMinimizedCard(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(12),
@@ -41,13 +41,13 @@ class ProfileCard extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryBlue.withOpacity(0.1),
+                  color: theme.colorScheme.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.person,
                   size: 30,
-                  color: AppColors.primaryBlue,
+                  color: theme.colorScheme.primary,
                 ),
               ),
               const SizedBox(width: 16),
@@ -60,10 +60,10 @@ class ProfileCard extends StatelessWidget {
                     // Name - больше и жирнее
                     Text(
                       user.fullName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18, // Увеличили
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 6), // Увеличили отступ
@@ -71,9 +71,9 @@ class ProfileCard extends StatelessWidget {
                     // Email - нормальный размер
                     Text(
                       user.email,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -82,18 +82,18 @@ class ProfileCard extends StatelessWidget {
                     // Position - нормальный размер
                     Text(
                       user.position,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     
                     // IIN - маленький, серый
                     Text(
                       'IIN: ${user.iin}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.grey,
+                        color: theme.colorScheme.onSurface.withOpacity(0.5),
                       ),
                     ),
                   ],
@@ -106,7 +106,8 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFullCard() {
+  Widget _buildFullCard(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -121,32 +122,33 @@ class ProfileCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.primaryBlue.withOpacity(0.1).withAlpha(255),
+                color: theme.colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.person,
                 size: 40,
-                color: AppColors.primaryBlue,
+                color: theme.colorScheme.primary,
               ),
             ),
             const SizedBox(height: 16),
             
             // User Info - правильные пропорции (1:3)
-            _buildInfoRow('Full Name', user.fullName, isTitle: true),
-            _buildInfoRow('IIN', user.iin),
-            _buildInfoRow('Position', user.position),
-            _buildInfoRow('Phone Number', user.phoneNumber),
-            _buildInfoRow('Email', user.email),
-            _buildInfoRow('Clothing Size', user.clothingSize),
-            _buildInfoRow('Shoe Size', user.shoeSize),
+            _buildInfoRow(context, 'Full Name', user.fullName, isTitle: true),
+            _buildInfoRow(context, 'IIN', user.iin),
+            _buildInfoRow(context, 'Position', user.position),
+            _buildInfoRow(context, 'Phone Number', user.phoneNumber),
+            _buildInfoRow(context, 'Email', user.email),
+            _buildInfoRow(context, 'Clothing Size', user.clothingSize),
+            _buildInfoRow(context, 'Shoe Size', user.shoeSize),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {bool isTitle = false}) {
+  Widget _buildInfoRow(BuildContext context, String label, String value, {bool isTitle = false}) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10), // Увеличили отступ
       child: Row(
@@ -156,7 +158,7 @@ class ProfileCard extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                color: AppColors.textSecondary,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -167,7 +169,7 @@ class ProfileCard extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
                 fontSize: isTitle ? 16 : 14,
                 fontWeight: isTitle ? FontWeight.w600 : FontWeight.w500,
               ),
