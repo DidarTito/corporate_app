@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'notification_details_screen.dart';
 import '../widgets/custom_app_bar.dart';
 import '../data/mock_data.dart';
-import '../utils/constants.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -48,10 +47,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         showBackButton: true,
       ),
       body: notifications.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 'No notifications',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                ),
               ),
             )
           : ListView.builder(
@@ -90,6 +92,7 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 1,
@@ -111,8 +114,8 @@ class _NotificationCard extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: notification.isRead
-                      ? AppColors.textPrimary
-                      : AppColors.primaryBlue,
+                      ? theme.colorScheme.onSurface
+                      : theme.colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -122,9 +125,9 @@ class _NotificationCard extends StatelessWidget {
                 notification.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
               const SizedBox(height: 12),
@@ -139,16 +142,16 @@ class _NotificationCard extends StatelessWidget {
                       children: [
                         Text(
                           '${notification.date.day}/${notification.date.month}/${notification.date.year}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.grey,
+                            color: theme.colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
                         Text(
                           '${notification.date.hour.toString().padLeft(2, '0')}:${notification.date.minute.toString().padLeft(2, '0')}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.grey,
+                            color: theme.colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
                       ],
@@ -160,8 +163,8 @@ class _NotificationCard extends StatelessWidget {
                     Container(
                       width: 8,
                       height: 8,
-                      decoration: const BoxDecoration(
-                        color: AppColors.primaryBlue,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
                         shape: BoxShape.circle,
                       ),
                     ),
