@@ -19,32 +19,31 @@ class SettingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     
     return Column(
       children: [
         ListTile(
           leading: icon != null
-              ? Icon(icon, color: theme.primaryColor)
+              ? Icon(icon, color: theme.colorScheme.primary)
               : null,
           title: Text(
             title,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: isDarkMode ? Colors.grey.shade200 : Colors.black87,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           trailing: trailing,
           onTap: onTap,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           minLeadingWidth: 36,
         ),
         if (showDivider)
           Divider(
             height: 1,
             thickness: 1,
-            color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade300,
+            color: theme.colorScheme.onSurface.withOpacity(0.12),
           ),
       ],
     );
