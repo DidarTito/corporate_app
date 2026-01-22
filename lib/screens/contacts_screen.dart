@@ -8,25 +8,25 @@ import '../utils/constants.dart';
 class ContactsScreen extends StatelessWidget {
   const ContactsScreen({super.key});
 
-  Future<void> _makeCall(String phoneNumber) async {
+  Future<void> _makeCall(BuildContext context, String phoneNumber) async {
     final Uri url = Uri.parse('tel:$phoneNumber');
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
       // Fallback for web or unsupported platforms
-      ScaffoldMessenger.of(GlobalKey<ScaffoldMessengerState>()
-          .currentState!
-          .context)
-          .showSnackBar(
-        SnackBar(
-          content: Text('Cannot make call to $phoneNumber'),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Cannot make call to $phoneNumber'),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'CONTACTS',
@@ -37,11 +37,11 @@ class ContactsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'Select a department to call',
               style: TextStyle(
                 fontSize: 16,
-                color: AppColors.textSecondary,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
               ),
               textAlign: TextAlign.center,
             ),
@@ -53,19 +53,19 @@ class ContactsScreen extends StatelessWidget {
               phoneNumber: contact.phoneNumber,
               icon: _getIconFromString(contact.icon),
               description: contact.description,
-              onCall: () => _makeCall(contact.phoneNumber),
+              onCall: () => _makeCall(context, contact.phoneNumber),
             )).toList(),
             
             // Emergency contact section
             const SizedBox(height: 30),
             const Divider(),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Emergency Contacts',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -76,9 +76,9 @@ class ContactsScreen extends StatelessWidget {
               elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: Colors.red.withOpacity(0.3), width: 1),
+                side: BorderSide(color: AppColors.error.withOpacity(0.3), width: 1),
               ),
-              color: Colors.red.withOpacity(0.05),
+              color: AppColors.error.withOpacity(0.05),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -86,7 +86,7 @@ class ContactsScreen extends StatelessWidget {
                     const Icon(
                       Icons.emergency,
                       size: 40,
-                      color: Colors.red,
+                      color: AppColors.error,
                     ),
                     const SizedBox(height: 12),
                     const Text(
@@ -94,31 +94,33 @@ class ContactsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: Colors.red,
+                        color: AppColors.error,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       '112 - General Emergency',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       '103 - Ambulance',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => _makeCall('112'),
+                      onPressed: () => _makeCall(context, '112'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
+                        backgroundColor: AppColors.error,
+                        foregroundColor: AppColors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
