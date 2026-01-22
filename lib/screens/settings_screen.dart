@@ -4,7 +4,7 @@ import '../widgets/custom_app_bar.dart';
 import '../widgets/setting_item.dart';
 import '../providers/settings_provider.dart';
 import '../utils/constants.dart';
-
+import 'login_screen.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -15,6 +15,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   void _showLanguageDialog(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final theme = Theme.of(context);
     
     showDialog(
       context: context,
@@ -81,20 +82,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryBlue.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.language, size: 20, color: AppColors.primaryBlue),
+                          Icon(Icons.language, size: 20, color: theme.colorScheme.primary),
                           const SizedBox(width: 8),
                           Text(
                             _getFullLanguageName(selectedLanguage),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.primaryBlue,
+                              color: theme.colorScheme.primary,
                             ),
                           ),
                         ],
@@ -149,14 +150,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           TextButton(
             onPressed: () {
-              final settings = Provider.of<SettingsProvider>(context, listen: false);
-              settings.logout();
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Go back from settings
-              Navigator.pop(context); // Go to login screen
+              // Просто переходим на Login страницу
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
+              foregroundColor: AppColors.error,
             ),
             child: const Text('LOGOUT'),
           ),
@@ -164,10 +166,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-
-  @override
+    @override
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context);
+    final theme = Theme.of(context);
     
     return Scaffold(
       appBar: const CustomAppBar(
@@ -185,12 +187,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Text(
                   settings.getLanguageDisplayName(settings.language),
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Icon(Icons.chevron_right, color: AppColors.grey),
+                Icon(Icons.chevron_right, color: theme.colorScheme.onSurface.withOpacity(0.5)),
               ],
             ),
             onTap: () => _showLanguageDialog(context),
@@ -205,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (value) {
                 settings.toggleDarkMode();
               },
-              activeThumbColor: AppColors.primaryBlue,
+              activeThumbColor: theme.colorScheme.primary,
             ),
           ),
           
@@ -213,16 +215,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SettingItem(
             title: 'App Version',
             icon: Icons.info,
-            trailing: const Text(
+            trailing: Text(
               '1.0.0',
               style: TextStyle(
-                color: AppColors.textSecondary,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
             showDivider: false,
           ),
           
-          // Logout Button
+          // Кнопка Logout
           const SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -237,8 +239,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.error,
+                foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -269,21 +271,22 @@ class _LanguageBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 80,
         height: 80,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlue : Colors.white,
+          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey.shade300,
+            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.5),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: theme.colorScheme.shadow.withOpacity(0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -297,7 +300,7 @@ class _LanguageBox extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? Colors.white : AppColors.textPrimary,
+                color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 4),
@@ -305,7 +308,7 @@ class _LanguageBox extends StatelessWidget {
               languageCode.toUpperCase(),
               style: TextStyle(
                 fontSize: 12,
-                color: isSelected ? Colors.white.withOpacity(0.8) : AppColors.textSecondary,
+                color: isSelected ? theme.colorScheme.onPrimary.withOpacity(0.8) : theme.colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
           ],
