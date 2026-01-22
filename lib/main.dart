@@ -1,9 +1,16 @@
-import 'package:corporate_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
+import 'providers/settings_provider.dart';
+import 'utils/theme.dart';
 
 void main() {
-  runApp(const CorporateApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => SettingsProvider(),
+      child: const CorporateApp(),
+    ),
+  );
 }
 
 class CorporateApp extends StatelessWidget {
@@ -11,17 +18,11 @@ class CorporateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
+    
     return MaterialApp(
       title: 'Corporate App',
-      theme: ThemeData(
-        primaryColor: AppColors.primaryBlue,
-        scaffoldBackgroundColor: AppColors.backgroundLight,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.primaryBlue,
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-      ),
+      theme: settings.isDarkMode ? darkTheme : lightTheme,
       home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
