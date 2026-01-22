@@ -44,7 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -60,35 +63,28 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = mockUser;
+    final theme = Theme.of(context);
     
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Profile Card (Minimized)
+            // Profile Card (Minimized) - переключает на Profile через BottomNav
             ProfileCard(
               user: user,
-              onPressed: () {
-                // Просто переходим на ProfileScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfileScreen(),
-                  ),
-                );
-              },
+              onPressed: null, // Profile navigation handled by bottom nav
               minimized: true,
             ),
             const SizedBox(height: 30),
             
             // Quick Actions Title
-            const Text(
+            Text(
               'Quick Actions',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 20),
@@ -101,7 +97,7 @@ class _HomeContent extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.help_outline,
                   label: 'Help',
-                  color: Colors.orange,
+                  color: AppColors.warning,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -116,7 +112,7 @@ class _HomeContent extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.contacts,
                   label: 'Contacts',
-                  color: Colors.green,
+                  color: AppColors.success,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -140,17 +136,18 @@ class _HomeContent extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.business,
                       size: 40,
-                      color: AppColors.primaryBlue,
+                      color: theme.colorScheme.primary,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
+                    Text(
                       'Welcome to Corporate App',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -158,7 +155,7 @@ class _HomeContent extends StatelessWidget {
                       'Everything you need in one place',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                   ],
