@@ -1,14 +1,11 @@
 import 'package:corporate_app/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'notifications_screen.dart';
 import 'profile_edit_screen.dart';
 import 'settings_screen.dart';
-import '../widgets/home_app_bar.dart';
 import '../widgets/profile_card.dart';
 import '../data/mock_data.dart';
 import '../providers/settings_provider.dart';
-import '../utils/constants.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -58,13 +55,6 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryBlue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -87,12 +77,6 @@ class ProfileScreen extends StatelessWidget {
                   child: Text(
                     'Settings',
                     style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.primaryBlue),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
