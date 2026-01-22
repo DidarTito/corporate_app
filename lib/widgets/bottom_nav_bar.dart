@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -14,14 +13,13 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     
     return Container(
       decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: theme.colorScheme.shadow.withOpacity(0.1),
             blurRadius: 10,
             spreadRadius: 2,
             offset: const Offset(0, -2),
@@ -34,8 +32,8 @@ class BottomNavBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        selectedItemColor: AppColors.primaryBlue,
-        unselectedItemColor: isDarkMode ? Colors.grey.shade400 : AppColors.grey,
+        selectedItemColor: theme.colorScheme.primary,
+        unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
         selectedLabelStyle: const TextStyle(fontSize: 12),
         unselectedLabelStyle: const TextStyle(fontSize: 12),
         items: const [
