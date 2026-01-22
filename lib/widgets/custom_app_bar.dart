@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -23,32 +22,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     
     return AppBar(
-      backgroundColor: isDarkMode ? AppColors.primaryDarkBlue : AppColors.primaryBlue,
-      foregroundColor: Colors.white,
-      elevation: 2,
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      foregroundColor: theme.appBarTheme.foregroundColor,
+      elevation: theme.appBarTheme.elevation ?? 2,
       leading: showBackButton
           ? IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back, 
+                  color: theme.appBarTheme.iconTheme?.color ?? theme.appBarTheme.foregroundColor),
               onPressed: onBackPressed ?? () => Navigator.pop(context),
             )
           : null,
       title: title != null
           ? Text(
               title!,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: theme.appBarTheme.titleTextStyle,
             )
           : null,
       centerTitle: true,
       actions: showNotificationButton
           ? [
               IconButton(
-                icon: const Icon(Icons.notifications_outlined),
+                icon: Icon(Icons.notifications_outlined, 
+                    color: theme.appBarTheme.iconTheme?.color ?? theme.appBarTheme.foregroundColor),
                 onPressed: onNotificationPressed,
               ),
             ]
