@@ -22,8 +22,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return AppBar(
-      backgroundColor: AppColors.primaryBlue,
+      backgroundColor: isDarkMode ? AppColors.primaryDarkBlue : AppColors.primaryBlue,
       foregroundColor: Colors.white,
       elevation: 2,
       leading: showBackButton

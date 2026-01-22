@@ -14,8 +14,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return AppBar(
-      backgroundColor: AppColors.primaryBlue,
+      backgroundColor: isDarkMode ? const Color.fromARGB(255, 0, 0, 0) : AppColors.primaryBlue,
       foregroundColor: Colors.white,
       elevation: 2,
       title: Row(
