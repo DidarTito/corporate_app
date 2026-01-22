@@ -1,4 +1,6 @@
+import 'package:corporate_app/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'notifications_screen.dart';
 import 'contacts_screen.dart';
 import 'help_screen.dart';
@@ -8,6 +10,7 @@ import '../widgets/home_app_bar.dart';
 import '../widgets/profile_card.dart';
 import '../data/mock_data.dart';
 import '../utils/constants.dart';
+import '../providers/settings_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,20 +22,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   
-  // Теперь у нас 2 экрана: Home и Profile
-  final List<Widget> _screens = [
-    const _HomeContent(),
-    const ProfileScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
+    
+    // Get the dynamic user with actual data from settings
+    final dynamicUser = _getDynamicUser(settings);
+    
+    final List<Widget> _screens = [
+      _HomeContent(user: dynamicUser),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
       appBar: HomeAppBar(
         onNotificationPressed: () {
@@ -50,19 +51,37 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
+    );
+  }
+
+  // Helper method to merge mock user with dynamic data from settings
+  User _getDynamicUser(SettingsProvider settings) {
+    // Use mockUser getter function
+    return mockUser.copyWith(
+      phoneNumber: settings.userData['phoneNumber'] ?? mockUser.phoneNumber,
+      email: settings.loginEmail.isNotEmpty 
+          ? settings.loginEmail 
+          : mockUser.email,
+      clothingSize: settings.userData['clothingSize'] ?? mockUser.clothingSize,
+      shoeSize: settings.userData['shoeSize'] ?? mockUser.shoeSize,
     );
   }
 }
 
 // Главный контент HomeScreen
 class _HomeContent extends StatelessWidget {
-  const _HomeContent();
+  final User user;
+  
+  const _HomeContent({required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final user = mockUser;
     final theme = Theme.of(context);
     
     return SingleChildScrollView(
@@ -70,10 +89,40 @@ class _HomeContent extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Profile Card (Minimized) - переключает на Profile через BottomNav
+                        // Debug info (remove in production)
+            Consumer<SettingsProvider>(
+              builder: (context, settings, child) {
+                if (settings.loginEmail.isNotEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Card(
+                      elevation: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.info_outline, size: 16, color: Colors.grey),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Current email: ${settings.loginEmail}',
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+
+            // Profile Card (Minimized) - uses dynamic user data
             ProfileCard(
               user: user,
-              onPressed: null, // Profile navigation handled by bottom nav
+              onPressed: null,
               minimized: true,
             ),
             const SizedBox(height: 30),
