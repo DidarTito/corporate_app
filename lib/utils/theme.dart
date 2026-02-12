@@ -97,11 +97,9 @@ ThemeData lightTheme = ThemeData(
     primary: AppColors.purplePrimary,
     secondary: AppColors.purpleLight,
     surface: AppColors.cardLight,
-    background: AppColors.backgroundLight,
     onPrimary: AppColors.white,
     onSecondary: AppColors.white,
     onSurface: AppColors.textLight,
-    onBackground: AppColors.textLight,
   ),
 );
 
@@ -215,10 +213,8 @@ ThemeData darkTheme = ThemeData(
     primary: AppColors.purplePrimary,
     secondary: AppColors.purpleLight,
     surface: AppColors.cardDark,
-    background: AppColors.backgroundDark,
     onPrimary: AppColors.white,
     onSecondary: AppColors.white,
     onSurface: AppColors.textDark,
-    onBackground: AppColors.textDark,
   ),
 );
