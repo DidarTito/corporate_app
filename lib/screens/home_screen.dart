@@ -10,7 +10,9 @@ import '../widgets/home_app_bar.dart';
 import '../widgets/profile_card.dart';
 import '../data/mock_data.dart';
 import '../utils/constants.dart';
+import '../utils/localization.dart';
 import '../providers/settings_provider.dart';
+import '../providers/auth_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,13 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
   
   @override
   Widget build(BuildContext context) {
-    final settings = Provider.of<SettingsProvider>(context);
+    final auth = Provider.of<AuthProvider>(context);
     
-    // Get the dynamic user with actual data from settings
-    final dynamicUser = _getDynamicUser(settings);
-    
-    final List<Widget> _screens = [
-      _HomeContent(user: dynamicUser),
+    final List<Widget> screens = [
+      _HomeContent(auth: auth),
       const ProfileScreen(),
     ];
 
@@ -47,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: _screens,
+        children: screens,
       ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
@@ -59,77 +58,64 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // Helper method to merge mock user with dynamic data from settings
-  User _getDynamicUser(SettingsProvider settings) {
-    // Use mockUser getter function
-    return mockUser.copyWith(
-      phoneNumber: settings.userData['phoneNumber'] ?? mockUser.phoneNumber,
-      email: settings.loginEmail.isNotEmpty 
-          ? settings.loginEmail 
-          : mockUser.email,
-      clothingSize: settings.userData['clothingSize'] ?? mockUser.clothingSize,
-      shoeSize: settings.userData['shoeSize'] ?? mockUser.shoeSize,
-    );
-  }
 }
 
 // Главный контент HomeScreen
 class _HomeContent extends StatelessWidget {
-  final User user;
+  final AuthProvider auth;
   
-  const _HomeContent({required this.user});
+  const _HomeContent({required this.auth});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-                        // Debug info (remove in production)
-            Consumer<SettingsProvider>(
-              builder: (context, settings, child) {
-                if (settings.loginEmail.isNotEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Card(
-                      elevation: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.info_outline, size: 16, color: Colors.grey),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                'Current email: ${settings.loginEmail}',
-                                style: const TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
+            // Logged-in User Card
+            if (auth.user != null)
+              FutureBuilder<Map<String, dynamic>?>(
+                future: auth.getProfile(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-            // Profile Card (Minimized) - uses dynamic user data
-            ProfileCard(
-              user: user,
-              onPressed: null,
-              minimized: true,
-            ),
+                  // Always show at least Gmail/email from auth, even if Firestore fails
+                  final data = snapshot.data ?? <String, dynamic>{};
+                  final authEmail = auth.user?.email ?? 'No email';
+                  final name = (data['name'] ?? 'User') as String;
+                  final email = (data['email'] ?? authEmail) as String;
+
+                  final baseUser = mockUser;
+                  final userFromFirebase = baseUser.copyWith(
+                    fullName: name,
+                    email: email,
+                  );
+
+                  return ProfileCard(
+                    user: userFromFirebase,
+                    minimized: true,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             const SizedBox(height: 30),
             
             // Quick Actions Title
             Text(
-              'Quick Actions',
+              l10n.quickActionsTitle,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -145,7 +131,7 @@ class _HomeContent extends StatelessWidget {
                 // Help Button
                 _ActionButton(
                   icon: Icons.help_outline,
-                  label: 'Help',
+                  label: l10n.helpLabel,
                   color: AppColors.warning,
                   onPressed: () {
                     Navigator.push(
@@ -160,7 +146,7 @@ class _HomeContent extends StatelessWidget {
                 // Contacts Button
                 _ActionButton(
                   icon: Icons.contacts,
-                  label: 'Contacts',
+                  label: l10n.contactsLabel,
                   color: AppColors.success,
                   onPressed: () {
                     Navigator.push(
@@ -192,7 +178,7 @@ class _HomeContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Welcome to Corporate App',
+                      l10n.welcomeHomeTitle,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -201,10 +187,10 @@ class _HomeContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Everything you need in one place',
+                      l10n.welcomeHomeSubtitle,
                       style: TextStyle(
                         fontSize: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -239,9 +225,9 @@ class _ActionButton extends StatelessWidget {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: color.withOpacity(0.3)),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
           child: IconButton(
             icon: Icon(icon, size: 36, color: color),

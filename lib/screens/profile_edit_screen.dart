@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import '../widgets/custom_app_bar.dart';
 import '../models/user_model.dart';
 import '../providers/settings_provider.dart';
+import '../providers/auth_provider.dart';
 import '../utils/constants.dart';
+import '../utils/localization.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   final User user;
@@ -26,17 +28,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   @override
   void initState() {
     super.initState();
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-    
-    // Используем email из логина, если он есть, иначе из настроек
-    final loginEmail = settings.loginEmail.isNotEmpty 
-        ? settings.loginEmail 
-        : (settings.userData['email'] ?? widget.user.email);
-    
-    _phoneController = TextEditingController(text: settings.userData['phoneNumber']);
-    _emailController = TextEditingController(text: loginEmail); // Используем email из логина
-    _clothingSizeController = TextEditingController(text: settings.userData['clothingSize']);
-    _shoeSizeController = TextEditingController(text: settings.userData['shoeSize']);
+    // Инициализируем поля напрямую из текущего пользователя,
+    // который уже собран из Firebase / кэша в ProfileScreen.
+    _phoneController = TextEditingController(text: widget.user.phoneNumber);
+    _emailController = TextEditingController(text: widget.user.email);
+    _clothingSizeController =
+        TextEditingController(text: widget.user.clothingSize);
+    _shoeSizeController = TextEditingController(text: widget.user.shoeSize);
   }
   
   @override
@@ -49,6 +47,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   }
   void _saveChanges(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final l10n = AppLocalizations.of(context);
     
     // Получаем новый email
     final newEmail = _emailController.text.trim();
@@ -58,6 +58,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     settings.updateUserData('email', newEmail);
     settings.updateUserData('clothingSize', _clothingSizeController.text);
     settings.updateUserData('shoeSize', _shoeSizeController.text);
+
+    // Persist to Firebase so data is available across devices
+    authProvider.updateProfile({
+      'phoneNumber': _phoneController.text,
+      'email': newEmail,
+      'clothingSize': _clothingSizeController.text,
+      'shoeSize': _shoeSizeController.text,
+    });
     
     // Обновляем loginEmail если он отличается
     if (settings.loginEmail != newEmail) {
@@ -67,7 +75,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Profile updated successfully'),
+        content: Text(l10n.profileUpdatedSuccessfully),
         backgroundColor: AppColors.success,
       ),
     );
@@ -77,22 +85,23 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   }
   
   void _showSaveConfirmation(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Save Changes'),
-        content: const Text('Are you sure you want to save the changes?'),
+        title: Text(l10n.saveChanges),
+        content: Text(l10n.saveChangesQuestion),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL'),
+            child: Text(l10n.cancelButton),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context); // Close dialog
               _saveChanges(context); // Save changes
             },
-            child: const Text('SAVE'),
+            child: Text(l10n.saveButton),
           ),
         ],
       ),
@@ -103,10 +112,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final settings = Provider.of<SettingsProvider>(context);
+    final l10n = AppLocalizations.of(context);
     
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Edit Profile',
+      appBar: CustomAppBar(
+        title: l10n.editProfileTitle,
         showBackButton: true,
       ),
       body: SingleChildScrollView(
@@ -127,7 +137,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: Icon(
@@ -139,9 +149,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     const SizedBox(height: 20),
                     
                     // Non-editable fields
-                    _buildReadOnlyField(context, 'IIN', widget.user.iin),
-                    _buildReadOnlyField(context, 'Full Name', widget.user.fullName),
-                    _buildReadOnlyField(context, 'Position', widget.user.position),
+                    _buildReadOnlyField(context, l10n.iinLabel, widget.user.iin),
+                    _buildReadOnlyField(context, l10n.fullNameLabel, widget.user.fullName),
+                    _buildReadOnlyField(context, l10n.positionLabel, widget.user.position),
                     
                     const SizedBox(height: 10),
                     const Divider(),
@@ -150,28 +160,28 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     // Editable fields
                     _buildEditableField(
                       context,
-                      'Phone Number',
+                      l10n.phoneLabel,
                       _phoneController,
                       TextInputType.phone,
                       Icons.phone,
                     ),
                     _buildEditableField(
                       context,
-                      'Email',
+                      l10n.emailLabel,
                       _emailController,
                       TextInputType.emailAddress,
                       Icons.email,
                     ),
                     _buildEditableField(
                       context,
-                      'Clothing Size',
+                      l10n.clothingSizeLabel,
                       _clothingSizeController,
                       TextInputType.text,
                       Icons.checkroom,
                     ),
                     _buildEditableField(
                       context,
-                      'Shoe Size',
+                      l10n.shoeSizeLabel,
                       _shoeSizeController,
                       TextInputType.text,
                       Icons.directions_walk,
@@ -180,7 +190,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     // Email source info (debug, можно убрать)
                     if (settings.loginEmail.isNotEmpty) ...[
                       const SizedBox(height: 10),
-                      Divider(color: theme.colorScheme.primary.withOpacity(0.2)),
+                      Divider(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
                       const SizedBox(height: 10),
                       Row(
                         children: [
@@ -206,11 +216,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       child: ElevatedButton.icon(
                         onPressed: () => _showSaveConfirmation(context),
                         icon: const Icon(Icons.save),
-                        label: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Text(
-                            'SAVE CHANGES',
-                            style: TextStyle(fontSize: 16),
+                            l10n.saveChanges,
+                            style: const TextStyle(fontSize: 16),
                           ),
                         ),
                       ),
@@ -227,7 +237,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              color: AppColors.info.withOpacity(0.05),
+              color: AppColors.info.withValues(alpha: 0.05),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -239,7 +249,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Note: IIN, Full Name, and Position are managed by HR department and cannot be changed here.',
+                            l10n.hrManagedFieldsNote,
                             style: TextStyle(
                               fontSize: 13,
                               color: AppColors.info,
@@ -248,10 +258,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Email can be edited but will be used for future logins.',
+                            l10n.emailLoginNote,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.info.withOpacity(0.8),
+                              color: AppColors.info.withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -278,7 +288,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             child: Text(
               label,
               style: TextStyle(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -318,7 +328,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             child: Text(
               label,
               style: TextStyle(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),

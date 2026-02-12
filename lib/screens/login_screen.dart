@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'home_screen.dart';
-import '../providers/settings_provider.dart';
+import 'register_screen.dart';
+import '../providers/auth_provider.dart';
+import '../utils/localization.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,21 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   String? _emailError;
   String? _passwordError;
+  bool _isLoading = false;
 
   bool _validateEmail(String email) {
     // Basic email validation
     final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return emailRegex.hasMatch(email);
-  }
-
-  bool _validatePassword(String password) {
-    // At least 8 characters, contains letters and numbers
-    if (password.length < 8) return false;
-    
-    final hasLetters = RegExp(r'[a-zA-Z]').hasMatch(password);
-    final hasNumbers = RegExp(r'[0-9]').hasMatch(password);
-    
-    return hasLetters && hasNumbers;
   }
 
   void _validateForm() {
@@ -49,15 +42,13 @@ class _LoginScreenState extends State<LoginScreen> {
       
       if (password.isEmpty) {
         _passwordError = 'Password is required';
-      } else if (password.length < 8) {
-        _passwordError = 'Password must be at least 8 characters';
-      } else if (!_validatePassword(password)) {
-        _passwordError = 'Password must contain letters and numbers';
+      } else if (password.length < 6) {
+        _passwordError = 'Password must be at least 6 characters';
       }
     });
   }
 
-  void _login(BuildContext context) {
+  void _login(BuildContext context) async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -69,20 +60,32 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // Сохраняем email в провайдере
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-    settings.saveLoginEmail(email);
-
-    // Mock login
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    setState(() => _isLoading = true);
+    
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final error = await auth.login(email, password);
+    
+    setState(() => _isLoading = false);
+    
+    if (!mounted) return;
+    
+    if (error != null) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error)),
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
@@ -101,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.colorScheme.shadow.withOpacity(0.1),
+                      color: theme.colorScheme.shadow.withValues(alpha: 0.1),
                       blurRadius: 20,
                       spreadRadius: 2,
                     ),
@@ -128,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     
                     // Заголовок
                     Text(
-                      'Welcome Back',
+                      l10n.loginTitle,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -137,10 +140,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Sign in to continue',
+                      l10n.loginSubtitle,
                       style: TextStyle(
                         fontSize: 16,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -150,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: l10n.emailLabel,
                         prefixIcon: const Icon(Icons.email_outlined),
                         hintText: 'your.email@company.com',
                         errorText: _emailError,
@@ -169,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: l10n.passwordLabel,
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -188,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         helperText: 'At least 8 characters with letters and numbers',
                         helperStyle: TextStyle(
                           fontSize: 11,
-                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                       onChanged: (value) {
@@ -203,8 +206,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => _login(context),
-                        child: const Text('LOGIN'),
+                        onPressed: _isLoading ? null : () => _login(context),
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(l10n.loginButton),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -212,44 +221,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Ссылка на регистрацию
                     TextButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Register screen will be in next release'),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterScreen(),
                           ),
                         );
                       },
-                      child: const Text('No account? Register'),
-                    ),
-                    
-                    // Password requirements
-                    const SizedBox(height: 16),
-                    Card(
-                      elevation: 0,
-                      color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Password Requirements:',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: theme.colorScheme.onSurface.withOpacity(0.7),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '• At least 8 characters\n• Must contain letters and numbers',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: theme.colorScheme.onSurface.withOpacity(0.5),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      child: Text(l10n.noAccountRegister),
                     ),
                   ],
                 ),
@@ -258,10 +237,10 @@ class _LoginScreenState extends State<LoginScreen> {
               // Footer
               const SizedBox(height: 40),
               Text(
-                'Corporate App v1.0',
+                '${l10n.appName} v1.0',
                 style: TextStyle(
                   fontSize: 14,
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],
