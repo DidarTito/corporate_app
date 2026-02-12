@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "22766110884",
+    "project_id": "corporate-app-b7bed",
+    "storage_bucket": "corporate-app-b7bed.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22766110884:android:f64c43f9ebf91fb68afe31",
+        "android_client_info": {
+          "package_name": "com.example.corporate_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMIKLvd3lgI_E0Xr66oJN5vY4XQf4fM0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
