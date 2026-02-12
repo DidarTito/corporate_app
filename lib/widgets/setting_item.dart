@@ -43,7 +43,7 @@ class SettingItem extends StatelessWidget {
           Divider(
             height: 1,
             thickness: 1,
-            color: theme.colorScheme.onSurface.withOpacity(0.12),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
           ),
       ],
     );

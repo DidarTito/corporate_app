@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
+import '../utils/localization.dart';
 
 class ProfileCard extends StatelessWidget {
   final User user;
@@ -41,7 +42,7 @@ class ProfileCard extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Icon(
@@ -73,7 +74,7 @@ class ProfileCard extends StatelessWidget {
                       user.email,
                       style: TextStyle(
                         fontSize: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -84,17 +85,22 @@ class ProfileCard extends StatelessWidget {
                       user.position,
                       style: TextStyle(
                         fontSize: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     
                     // IIN - маленький, серый
-                    Text(
-                      'IIN: ${user.iin}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final l10n = AppLocalizations.of(context);
+                        return Text(
+                          '${l10n.iinLabel}: ${user.iin}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -108,6 +114,7 @@ class ProfileCard extends StatelessWidget {
 
   Widget _buildFullCard(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -122,7 +129,7 @@ class ProfileCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(40),
               ),
               child: Icon(
@@ -134,13 +141,13 @@ class ProfileCard extends StatelessWidget {
             const SizedBox(height: 16),
             
             // User Info - правильные пропорции (1:3)
-            _buildInfoRow(context, 'Full Name', user.fullName, isTitle: true),
-            _buildInfoRow(context, 'IIN', user.iin),
-            _buildInfoRow(context, 'Position', user.position),
-            _buildInfoRow(context, 'Phone Number', user.phoneNumber),
-            _buildInfoRow(context, 'Email', user.email),
-            _buildInfoRow(context, 'Clothing Size', user.clothingSize),
-            _buildInfoRow(context, 'Shoe Size', user.shoeSize),
+            _buildInfoRow(context, l10n.fullNameLabel, user.fullName, isTitle: true),
+            _buildInfoRow(context, l10n.iinLabel, user.iin),
+            _buildInfoRow(context, l10n.positionLabel, user.position),
+            _buildInfoRow(context, l10n.phoneLabel, user.phoneNumber),
+            _buildInfoRow(context, l10n.emailLabel, user.email),
+            _buildInfoRow(context, l10n.clothingSizeLabel, user.clothingSize),
+            _buildInfoRow(context, l10n.shoeSizeLabel, user.shoeSize),
           ],
         ),
       ),
@@ -158,7 +165,7 @@ class ProfileCard extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
