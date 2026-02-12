@@ -1,8 +1,10 @@
 import 'package:corporate_app/models/notification_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'notification_details_screen.dart';
 import '../widgets/custom_app_bar.dart';
 import '../data/mock_data.dart';
+import '../utils/localization.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -41,18 +43,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'NOTIFICATIONS',
+      appBar: CustomAppBar(
+        title: l10n.notificationsTitle,
         showBackButton: true,
       ),
       body: notifications.isEmpty
           ? Center(
               child: Text(
-                'No notifications',
+                l10n.noNotifications,
                 style: TextStyle(
                   fontSize: 18,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
             )
@@ -127,7 +130,7 @@ class _NotificationCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14,
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 12),
@@ -144,14 +147,14 @@ class _NotificationCard extends StatelessWidget {
                           '${notification.date.day}/${notification.date.month}/${notification.date.year}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                           ),
                         ),
                         Text(
                           '${notification.date.hour.toString().padLeft(2, '0')}:${notification.date.minute.toString().padLeft(2, '0')}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                           ),
                         ),
                       ],

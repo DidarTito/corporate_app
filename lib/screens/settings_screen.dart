@@ -4,6 +4,7 @@ import '../widgets/custom_app_bar.dart';
 import '../widgets/setting_item.dart';
 import '../providers/settings_provider.dart';
 import '../utils/constants.dart';
+import '../utils/localization.dart';
 import 'login_screen.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -22,8 +23,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context) {
         String selectedLanguage = settings.language;
         
+        final l10n = AppLocalizations.of(context);
         return AlertDialog(
-          title: const Text('Select Language'),
+          title: Text(l10n.selectLanguage),
           content: StatefulBuilder(
             builder: (context, setState) {
               return SizedBox(
@@ -82,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -107,16 +109,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCEL'),
-            ),
-            TextButton(
-              onPressed: () {
-                settings.changeLanguage(selectedLanguage);
-                Navigator.pop(context);
+            Builder(
+              builder: (context) {
+                final l10n = AppLocalizations.of(context);
+                return TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l10n.cancelButton),
+                );
               },
-              child: const Text('SAVE'),
+            ),
+            Builder(
+              builder: (context) {
+                final l10n = AppLocalizations.of(context);
+                return TextButton(
+                  onPressed: () {
+                    settings.changeLanguage(selectedLanguage);
+                    Navigator.pop(context);
+                  },
+                  child: Text(l10n.saveButton),
+                );
+              },
             ),
           ],
         );
@@ -138,15 +150,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: Text(l10n.logoutTitle),
+        content: Text(l10n.logoutQuestion),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL'),
+            child: Text(l10n.cancelButton),
           ),
           TextButton(
             onPressed: () {
@@ -160,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextButton.styleFrom(
               foregroundColor: AppColors.error,
             ),
-            child: const Text('LOGOUT'),
+            child: Text(l10n.logoutTitle.toUpperCase()),
           ),
         ],
       ),
@@ -170,17 +183,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context);
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Settings',
+      appBar: CustomAppBar(
+        title: l10n.settingsTitle,
         showBackButton: true,
       ),
       body: ListView(
         children: [
           // Language Setting
           SettingItem(
-            title: 'Language',
+            title: l10n.languageTitle,
             icon: Icons.language,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -188,11 +202,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Text(
                   settings.getLanguageDisplayName(settings.language),
                   style: TextStyle(
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(width: 8),
-                Icon(Icons.chevron_right, color: theme.colorScheme.onSurface.withOpacity(0.5)),
+                Icon(Icons.chevron_right, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
               ],
             ),
             onTap: () => _showLanguageDialog(context),
@@ -200,7 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           // Dark Mode Setting
           SettingItem(
-            title: 'Dark Mode',
+            title: l10n.darkModeTitle,
             icon: Icons.dark_mode,
             trailing: Switch(
               value: settings.isDarkMode,
@@ -213,12 +227,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           // App Version
           SettingItem(
-            title: 'App Version',
+            title: l10n.appVersionTitle,
             icon: Icons.info,
             trailing: Text(
               '1.0.0',
               style: TextStyle(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
             showDivider: false,
@@ -231,11 +245,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ElevatedButton.icon(
               onPressed: () => _showLogoutDialog(context),
               icon: const Icon(Icons.logout, size: 20),
-              label: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              label: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  'LOGOUT',
-                  style: TextStyle(fontSize: 16),
+                  l10n.logoutTitle.toUpperCase(),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
               style: ElevatedButton.styleFrom(
@@ -281,12 +295,12 @@ class _LanguageBox extends StatelessWidget {
           color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.5),
+            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withValues(alpha: 0.5),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: theme.colorScheme.shadow.withOpacity(0.1),
+              color: theme.colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -308,7 +322,7 @@ class _LanguageBox extends StatelessWidget {
               languageCode.toUpperCase(),
               style: TextStyle(
                 fontSize: 12,
-                color: isSelected ? theme.colorScheme.onPrimary.withOpacity(0.8) : theme.colorScheme.onSurface.withOpacity(0.6),
+                color: isSelected ? theme.colorScheme.onPrimary.withValues(alpha: 0.8) : theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ],

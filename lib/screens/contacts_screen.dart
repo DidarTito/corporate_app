@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 import '../widgets/custom_app_bar.dart';
 import '../data/contacts_data.dart';
 import '../widgets/contact_card.dart';
 import '../utils/constants.dart';
+import '../utils/localization.dart';
 
 class ContactsScreen extends StatelessWidget {
   const ContactsScreen({super.key});
@@ -15,9 +17,10 @@ class ContactsScreen extends StatelessWidget {
     } else {
       // Fallback for web or unsupported platforms
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Cannot make call to $phoneNumber'),
+            content: Text(l10n.cannotCall(phoneNumber)),
           ),
         );
       }
@@ -27,9 +30,10 @@ class ContactsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'CONTACTS',
+      appBar: CustomAppBar(
+        title: l10n.contactsTitle,
         showBackButton: true,
       ),
       body: SingleChildScrollView(
@@ -38,10 +42,10 @@ class ContactsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Select a department to call',
+              l10n.selectDepartmentToCall,
               style: TextStyle(
                 fontSize: 16,
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
               textAlign: TextAlign.center,
             ),
@@ -54,14 +58,14 @@ class ContactsScreen extends StatelessWidget {
               icon: _getIconFromString(contact.icon),
               description: contact.description,
               onCall: () => _makeCall(context, contact.phoneNumber),
-            )).toList(),
+            )),
             
             // Emergency contact section
             const SizedBox(height: 30),
             const Divider(),
             const SizedBox(height: 20),
             Text(
-              'Emergency Contacts',
+              l10n.emergencyContacts,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -76,9 +80,9 @@ class ContactsScreen extends StatelessWidget {
               elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: AppColors.error.withOpacity(0.3), width: 1),
+                side: BorderSide(color: AppColors.error.withValues(alpha: 0.3), width: 1),
               ),
-              color: AppColors.error.withOpacity(0.05),
+              color: AppColors.error.withValues(alpha: 0.05),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -89,9 +93,9 @@ class ContactsScreen extends StatelessWidget {
                       color: AppColors.error,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Emergency Services',
-                      style: TextStyle(
+                    Text(
+                      l10n.emergencyServices,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: AppColors.error,
@@ -99,7 +103,7 @@ class ContactsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '112 - General Emergency',
+                      l10n.generalEmergency,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -108,7 +112,7 @@ class ContactsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '103 - Ambulance',
+                      l10n.ambulance,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -126,12 +130,12 @@ class ContactsScreen extends StatelessWidget {
                         ),
                         minimumSize: const Size(150, 45),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.emergency_outlined),
-                          SizedBox(width: 8),
-                          Text('EMERGENCY CALL'),
+                          const Icon(Icons.emergency_outlined),
+                          const SizedBox(width: 8),
+                          Text(l10n.emergencyCall),
                         ],
                       ),
                     ),

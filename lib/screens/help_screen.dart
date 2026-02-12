@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/custom_app_bar.dart';
+import '../utils/localization.dart';
+import 'package:provider/provider.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -11,9 +13,10 @@ class HelpScreen extends StatelessWidget {
       await launchUrl(url);
     } else {
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cannot make call to support'),
+          SnackBar(
+            content: Text(l10n.cannotCallSupport),
           ),
         );
       }
@@ -23,9 +26,10 @@ class HelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'HELP',
+      appBar: CustomAppBar(
+        title: l10n.helpTitle,
         showBackButton: true,
       ),
       body: SingleChildScrollView(
@@ -34,10 +38,10 @@ class HelpScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'If you have issues with the app or questions, contact support',
+              l10n.helpDescription,
               style: TextStyle(
                 fontSize: 16,
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
               textAlign: TextAlign.center,
             ),
@@ -58,7 +62,7 @@ class HelpScreen extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Icon(
@@ -71,7 +75,7 @@ class HelpScreen extends StatelessWidget {
                     
                     // Support service right (big)
                     Text(
-                      'Support Service',
+                      l10n.supportService,
                       style: TextStyle(
                         fontSize: 28, // HUGE
                         fontWeight: FontWeight.bold,
@@ -94,10 +98,10 @@ class HelpScreen extends StatelessWidget {
                     const SizedBox(height: 10),
                     
                     Text(
-                      '24/7 Support Available',
+                      l10n.supportAvailable,
                       style: TextStyle(
                         fontSize: 18, // Big
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -109,11 +113,11 @@ class HelpScreen extends StatelessWidget {
                       child: ElevatedButton.icon(
                         onPressed: () => _callSupport(context),
                         icon: const Icon(Icons.call, size: 24),
-                        label: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 18),
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 18),
                           child: Text(
-                            'Call Support',
-                            style: TextStyle(fontSize: 18),
+                            l10n.callSupport,
+                            style: const TextStyle(fontSize: 18),
                           ),
                         ),
                       ),
@@ -141,7 +145,7 @@ class HelpScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Email Support',
+                      l10n.emailSupport,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -159,10 +163,10 @@ class HelpScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Response time: within 24 hours',
+                      l10n.responseTime,
                       style: TextStyle(
                         fontSize: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -173,9 +177,9 @@ class HelpScreen extends StatelessWidget {
                           await launchUrl(url);
                         }
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                        child: Text('SEND EMAIL'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                        child: Text(l10n.sendEmail),
                       ),
                     ),
                   ],
