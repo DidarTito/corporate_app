@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:provider/provider.dart';
 import '../widgets/custom_app_bar.dart';
 import '../data/contacts_data.dart';
 import '../widgets/contact_card.dart';
 import '../utils/constants.dart';
 import '../utils/localization.dart';
+import '../utils/app_snackbars.dart';
+import 'chat_screen.dart';
 
-class ContactsScreen extends StatelessWidget {
+class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
+
+  @override
+  State<ContactsScreen> createState() => _ContactsScreenState();
+}
+
+class _ContactsScreenState extends State<ContactsScreen> {
 
   Future<void> _makeCall(BuildContext context, String phoneNumber) async {
     final Uri url = Uri.parse('tel:$phoneNumber');
@@ -18,11 +25,8 @@ class ContactsScreen extends StatelessWidget {
       // Fallback for web or unsupported platforms
       if (context.mounted) {
         final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.cannotCall(phoneNumber)),
-          ),
-        );
+        // ignore: use_build_context_synchronously
+        AppSnackBars.showError(context, l10n.cannotCall(phoneNumber));
       }
     }
   }
@@ -41,6 +45,23 @@ class ContactsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Release 2: Online Chat
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                leading: Icon(Icons.chat, color: theme.colorScheme.primary),
+                title: Text(l10n.onlineChat),
+                subtitle: Text(l10n.faqTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => ChatScreen(title: l10n.onlineChat, subtitle: l10n.contactsTitle),
+                  ));
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(
               l10n.selectDepartmentToCall,
               style: TextStyle(
@@ -50,7 +71,6 @@ class ContactsScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            
             // List of department contacts
             ...departmentContacts.map((contact) => ContactCard(
               department: contact.department,
@@ -143,12 +163,37 @@ class ContactsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            // Release 2: FAQ
+            const SizedBox(height: 30),
+            const Divider(),
+            const SizedBox(height: 16),
+            Text(
+              l10n.faqTitle,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _FaqTile(
+              question: 'Как связаться с HR отделом?',
+              answer: 'Позвоните по номеру отдела кадров из списка контактов выше или воспользуйтесь онлайн-чатом.',
+            ),
+            _FaqTile(
+              question: 'Как оформить отпуск?',
+              answer: 'Обратитесь в HR отдел с заявлением. Документы можно подать через корпоративный портал.',
+            ),
+            _FaqTile(
+              question: 'Где посмотреть график смен?',
+              answer: 'График смен доступен в разделе "Финансы" и у вашего непосредственного руководителя.',
+            ),
           ],
         ),
       ),
     );
   }
-  
+
   IconData _getIconFromString(String iconName) {
     switch (iconName) {
       case 'people':
@@ -166,5 +211,63 @@ class ContactsScreen extends StatelessWidget {
       default:
         return Icons.help_outline;
     }
+  }
+}
+
+class _FaqTile extends StatefulWidget {
+  final String question;
+  final String answer;
+
+  const _FaqTile({required this.question, required this.answer});
+
+  @override
+  State<_FaqTile> createState() => _FaqTileState();
+}
+
+class _FaqTileState extends State<_FaqTile> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => setState(() => _expanded = !_expanded),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.question,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                ],
+              ),
+              if (_expanded) ...[
+                const SizedBox(height: 8),
+                Text(
+                  widget.answer,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

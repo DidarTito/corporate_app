@@ -32,6 +32,81 @@ class AppColors {
   static const greyDark = Color(0xFF616161);
 }
 
+class AppSpacing {
+  // Основные отступы
+  static const xs = 4.0;
+  static const sm = 8.0;
+  static const md = 12.0;
+  static const lg = 16.0;
+  static const xl = 20.0;
+  static const xxl = 24.0;
+  static const xxxl = 32.0;
+  
+  // Стандартные отступы для контента
+  static const screenPadding = lg;
+  static const cardPadding = lg;
+  static const itemSpacing = md;
+}
+
+class AppBorderRadius {
+  // Стандартные радиусы скругления
+  static const xs = 4.0;
+  static const sm = 8.0;
+  static const md = 12.0;
+  static const lg = 16.0;
+  static const xl = 20.0;
+  static const circle = 50.0;
+  
+  // Предустановленные BorderRadius
+  static const allMd = BorderRadius.all(Radius.circular(md));
+  static const allLg = BorderRadius.all(Radius.circular(lg));
+}
+
+class AppTypography {
+  // Заголовки
+  static const titleLarge = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+  );
+  
+  static const titleMedium = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+  );
+  
+  static const titleSmall = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+  );
+  
+  // Основной текст
+  static const bodyLarge = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
+  
+  static const bodyMedium = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
+  
+  static const bodySmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
+  
+  // Ярлыки и подписи
+  static const labelLarge = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+  
+  static const labelSmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+}
+
 class AppStrings {
   static const appName = 'Corporate App';
 }

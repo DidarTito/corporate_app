@@ -41,6 +41,8 @@ dependencies:
   cloud_firestore: ^6.1.2
   firebase_storage: ^13.0.6
   fluttertoast: ^9.0.0
+  image_picker: ^1.0.7  # For photo uploads
+  cached_network_image: ^3.3.1  # For cached images
 
 dev_dependencies:
   flutter_test:

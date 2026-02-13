@@ -1,6 +1,5 @@
 import 'package:corporate_app/models/notification_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'notification_details_screen.dart';
 import '../widgets/custom_app_bar.dart';
 import '../data/mock_data.dart';

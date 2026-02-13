@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../utils/localization.dart';
+import '../utils/app_snackbars.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -78,20 +79,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     
     if (error != null) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-          duration: const Duration(seconds: 5),
-        ),
-      );
+      AppSnackBars.showError(context, error);
     } else {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Registration successful!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      final l10n = AppLocalizations.of(context);
+      AppSnackBars.showSuccess(context, l10n.registrationSuccessful);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const LoginScreen()),

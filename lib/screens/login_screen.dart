@@ -4,6 +4,7 @@ import 'home_screen.dart';
 import 'register_screen.dart';
 import '../providers/auth_provider.dart';
 import '../utils/localization.dart';
+import '../utils/app_snackbars.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -71,9 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
     
     if (error != null) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      AppSnackBars.showError(context, error);
     } else {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(

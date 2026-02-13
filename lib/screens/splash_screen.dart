@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import '../utils/constants.dart';
+import '../utils/localization.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -114,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   'timestamp': Timestamp.now(),
                 });
               },
-              child: const Text("Test Firebase"),
+              child: Text(AppLocalizations.of(context).testFirebase),
             ),
           ],
         ),

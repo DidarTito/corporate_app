@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/localization.dart';
 
 class ContactCard extends StatelessWidget {
   final String department;
@@ -89,7 +90,7 @@ class ContactCard extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onCall,
                 icon: const Icon(Icons.call, size: 16),
-                label: const Text('CALL'),
+                label: Text(AppLocalizations.of(context).callButton),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,

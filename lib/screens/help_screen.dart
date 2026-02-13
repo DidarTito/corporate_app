@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/faq_widget.dart';
 import '../utils/localization.dart';
-import 'package:provider/provider.dart';
+import '../utils/app_snackbars.dart';
+import 'chat_screen.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -14,11 +16,8 @@ class HelpScreen extends StatelessWidget {
     } else {
       if (context.mounted) {
         final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.cannotCallSupport),
-          ),
-        );
+        // ignore: use_build_context_synchronously
+        AppSnackBars.showError(context, l10n.cannotCallSupport);
       }
     }
   }
@@ -45,8 +44,24 @@ class HelpScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 20),
+            // Release 2: Online chat with employee support
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                leading: Icon(Icons.chat, color: theme.colorScheme.primary, size: 28),
+                title: Text(l10n.onlineChat, style: TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.onlineChatSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => ChatScreen(title: l10n.onlineChat),
+                  ));
+                },
+              ),
+            ),
             const SizedBox(height: 30),
-            
             // Support Card (Big - all components huge)
             Card(
               elevation: 4,
@@ -186,6 +201,22 @@ class HelpScreen extends StatelessWidget {
                 ),
               ),
             ),
+            
+            // Release 2: FAQ Section
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                l10n.frequentlyAskedQuestions,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            const FAQWidget(compact: true),
           ],
         ),
       ),

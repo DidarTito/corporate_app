@@ -139,12 +139,20 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> updateProfile(Map<String, dynamic> data) async {
     final currentUser = user ?? _auth.currentUser;
-    if (currentUser == null) return;
+    if (currentUser == null) {
+      print('[AuthProvider] updateProfile: No user found!');
+      return;
+    }
+
+    print('[AuthProvider] updateProfile: Writing to users/${currentUser.uid}');
+    print('[AuthProvider] updateProfile: Data = $data');
 
     await _db.collection('users').doc(currentUser.uid).set(
           data,
           SetOptions(merge: true),
         );
+
+    print('[AuthProvider] updateProfile: Successfully written to Firestore!');
 
     // Update cache so UI reflects changes immediately
     _cachedProfile = {

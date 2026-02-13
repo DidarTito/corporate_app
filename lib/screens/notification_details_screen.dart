@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
 import '../models/notification_model.dart';
+import '../utils/localization.dart';
 
 class NotificationDetailsScreen extends StatelessWidget {
   final NotificationItem notification;
@@ -13,9 +14,10 @@ class NotificationDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'NOTIFICATION',
+      appBar: CustomAppBar(
+        title: l10n.notificationTitle,
         showBackButton: true,
       ),
       body: SingleChildScrollView(
@@ -41,7 +43,7 @@ class NotificationDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Date:',
+                              l10n.dateLabel,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -61,7 +63,7 @@ class NotificationDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'Time:',
+                              l10n.timeLabel,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -83,7 +85,7 @@ class NotificationDetailsScreen extends StatelessWidget {
                     
                     // From
                     Text(
-                      'From:',
+                      l10n.fromLabel,
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -101,7 +103,7 @@ class NotificationDetailsScreen extends StatelessWidget {
                     
                     // Title
                     Text(
-                      'Title:',
+                      l10n.titleLabel,
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -119,7 +121,7 @@ class NotificationDetailsScreen extends StatelessWidget {
                     
                     // Description (maximized)
                     Text(
-                      'Description:',
+                      l10n.descriptionLabel,
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -145,7 +147,7 @@ class NotificationDetailsScreen extends StatelessWidget {
                     // Type
                     const SizedBox(height: 24),
                     Text(
-                      'Type:',
+                      l10n.typeLabel,
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.6),

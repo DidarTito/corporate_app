@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'profile_edit_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/profile_card.dart';
+import '../widgets/app_widgets.dart';
 import '../data/mock_data.dart';
 import '../providers/settings_provider.dart';
 import '../providers/auth_provider.dart';
@@ -36,53 +37,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         future: auth.getProfile(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
 
           // We always try to show something, even if Firestore fails.
           final data = snapshot.data ?? <String, dynamic>{};
           final authEmail = auth.user?.email ?? '';
-          
-          // Create a User object from Firebase data and mock user
+          // Merge settings into data for fallback
+          final merged = <String, dynamic>{
+            ...data,
+            'email': data['email'] ?? authEmail,
+            'phoneNumber': data['phoneNumber'] ?? settings.userData['phoneNumber'],
+            'clothingSize': data['clothingSize'] ?? settings.userData['clothingSize'],
+            'shoeSize': data['shoeSize'] ?? settings.userData['shoeSize'],
+          };
           final baseUser = mockUser;
-          final userFromFirebase = baseUser.copyWith(
-            fullName: (data['name'] ?? baseUser.fullName) as String,
-            email: (data['email'] ?? authEmail ?? baseUser.email) as String,
-            phoneNumber: (data['phoneNumber'] ??
-                    settings.userData['phoneNumber'] ??
-                    baseUser.phoneNumber) as String,
-            clothingSize: (data['clothingSize'] ??
-                    settings.userData['clothingSize'] ??
-                    baseUser.clothingSize) as String,
-            shoeSize: (data['shoeSize'] ??
-                    settings.userData['shoeSize'] ??
-                    baseUser.shoeSize) as String,
-          );
+          final userFromFirebase = User.fromProfileMap(baseUser, merged);
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                // Debug info
-                Card(
-                  elevation: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.info_outline, size: 16, color: Colors.grey),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            '${l10n.loggedInAs} ${data['email'] ?? authEmail ?? 'User'}',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
                 // Full Profile Card with Firebase data
                 ProfileCard(
                   user: userFromFirebase,

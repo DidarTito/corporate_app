@@ -400,5 +400,529 @@ class AppLocalizations {
     if (_isRu) return 'Добро пожаловать,';
     return 'Welcome,';
   }
+
+  // Release 2 - Profile extensions
+  String get photoLabel {
+    if (_isKz) return 'Фото';
+    if (_isRu) return 'Фото';
+    return 'Photo';
+  }
+
+  String get ratingLabel {
+    if (_isKz) return 'Рейтинг';
+    if (_isRu) return 'Рейтинг';
+    return 'Rating';
+  }
+
+  String get awardsLabel {
+    if (_isKz) return 'Марапаттар';
+    if (_isRu) return 'Награды';
+    return 'Awards';
+  }
+
+  String get childrenLabel {
+    if (_isKz) return 'Балалар туралы ақпарат';
+    if (_isRu) return 'Сведения о детях';
+    return 'Children Information';
+  }
+
+  String get uploadPhoto {
+    if (_isKz) return 'Фото жүктеу';
+    if (_isRu) return 'Загрузить фото';
+    return 'Upload Photo';
+  }
+
+  String get changePhoto {
+    if (_isKz) return 'Фотоны өзгерту';
+    if (_isRu) return 'Изменить фото';
+    return 'Change Photo';
+  }
+
+  // Release 2 - Status
+  String get statusLabel {
+    if (_isKz) return 'Ағымдағы мәртебе';
+    if (_isRu) return 'Текущий статус';
+    return 'Current Status';
+  }
+
+  String get statusActive {
+    if (_isKz) return 'Белсенді';
+    if (_isRu) return 'Активен';
+    return 'Active';
+  }
+
+  String get statusVacation {
+    if (_isKz) return 'Демалыс';
+    if (_isRu) return 'Отпуск';
+    return 'Vacation';
+  }
+
+  String get statusTransfer {
+    if (_isKz) return 'Ауыстыру';
+    if (_isRu) return 'Перевод';
+    return 'Transfer';
+  }
+
+  // Release 2 - Home additions
+  String get bonusLabel {
+    if (_isKz) return 'Бонус';
+    if (_isRu) return 'Бонус';
+    return 'Bonus';
+  }
+
+  String get bonusPoints {
+    if (_isKz) return 'Баллдар';
+    if (_isRu) return 'Баллы';
+    return 'Points';
+  }
+
+  String get balanceLabel {
+    if (_isKz) return 'Баланс';
+    if (_isRu) return 'Баланс';
+    return 'Balance';
+  }
+
+  String get shiftsWorkedLabel {
+    if (_isKz) return 'Орындалған ауысымдар';
+    if (_isRu) return 'Отработано смен';
+    return 'Shifts Worked';
+  }
+
+  String get newsLabel {
+    if (_isKz) return 'Жаңалықтар';
+    if (_isRu) return 'Новости';
+    return 'News';
+  }
+
+  String get referralProgram {
+    if (_isKz) return 'Рефералдық бағдарлама';
+    if (_isRu) return 'Реферальная программа';
+    return 'Referral Program';
+  }
+
+  String get referralCode {
+    if (_isKz) return 'Рефералдық код';
+    if (_isRu) return 'Реферальный код';
+    return 'Referral Code';
+  }
+
+  String get referralLink {
+    if (_isKz) return 'Рефералдық сілтеме';
+    if (_isRu) return 'Реферальная ссылка';
+    return 'Referral Link';
+  }
+
+  String get copyLink {
+    if (_isKz) return 'Сілтемені көшіру';
+    if (_isRu) return 'Копировать ссылку';
+    return 'Copy Link';
+  }
+
+  String get linkCopied {
+    if (_isKz) return 'Сілтеме көшірілді';
+    if (_isRu) return 'Ссылка скопирована';
+    return 'Link Copied';
+  }
+
+  // Release 2 - Finance
+  String get financeTitle {
+    if (_isKz) return 'Қаржы';
+    if (_isRu) return 'Финансы';
+    return 'Finance';
+  }
+
+  String get currentObject {
+    if (_isKz) return 'Ағымдағы объект';
+    if (_isRu) return 'Текущий объект';
+    return 'Current Object';
+  }
+
+  String get historyLabel {
+    if (_isKz) return 'Тарих';
+    if (_isRu) return 'История';
+    return 'History';
+  }
+
+  String get totalShifts {
+    if (_isKz) return 'Жалпы ауысымдар';
+    if (_isRu) return 'Всего смен';
+    return 'Total Shifts';
+  }
+
+  String get trainingDeductions {
+    if (_isKz) return 'Оқу орталығы үшін удержания';
+    if (_isRu) return 'Удержания за УЦ';
+    return 'Training Deductions';
+  }
+
+  String get totalBalance {
+    if (_isKz) return 'Жалпы баланс';
+    if (_isRu) return 'Общий баланс';
+    return 'Total Balance';
+  }
+
+  String get completedVolume {
+    if (_isKz) return 'Орындалған көлем';
+    if (_isRu) return 'Выполненный объём';
+    return 'Completed Volume';
+  }
+
+  String get paymentLabel {
+    if (_isKz) return 'Төлем';
+    if (_isRu) return 'Выплата';
+    return 'Payment';
+  }
+
+  // Release 2 - Company
+  String get companyTitle {
+    if (_isKz) return 'Компания';
+    if (_isRu) return 'Компания';
+    return 'Company';
+  }
+
+  String get companyNews {
+    if (_isKz) return 'Компания жаңалықтары';
+    if (_isRu) return 'Новости компании';
+    return 'Company News';
+  }
+
+  String get projectRecruitment {
+    if (_isKz) return 'Жобаға қабылдау';
+    if (_isRu) return 'Набор на проекты';
+    return 'Project Recruitment';
+  }
+
+  String get trainingMaterials {
+    if (_isKz) return 'Оқу материалдары';
+    if (_isRu) return 'Учебные материалы';
+    return 'Training Materials';
+  }
+
+  String get memosLabel {
+    if (_isKz) return 'Ескертпелер';
+    if (_isRu) return 'Памятки';
+    return 'Memos';
+  }
+
+  // Release 2 - Search
+  String get searchHint {
+    if (_isKz) return 'Іздеу...';
+    if (_isRu) return 'Поиск...';
+    return 'Search...';
+  }
+
+  String get noResults {
+    if (_isKz) return 'Нәтижелер табылмады';
+    if (_isRu) return 'Результаты не найдены';
+    return 'No results found';
+  }
+
+  // Release 2 - Chat
+  String get chatLabel {
+    if (_isKz) return 'Чат';
+    if (_isRu) return 'Чат';
+    return 'Chat';
+  }
+
+  String get onlineChat {
+    if (_isKz) return 'Онлайн чат';
+    if (_isRu) return 'Онлайн чат';
+    return 'Online Chat';
+  }
+
+  String get typeMessage {
+    if (_isKz) return 'Хабарлама енгізіңіз...';
+    if (_isRu) return 'Введите сообщение...';
+    return 'Type a message...';
+  }
+
+  String get sendMessage {
+    if (_isKz) return 'Жіберу';
+    if (_isRu) return 'Отправить';
+    return 'Send';
+  }
+
+  // Release 2 - FAQ
+  String get faqTitle {
+    if (_isKz) return 'Жиі қойылатын сұрақтар';
+    if (_isRu) return 'Часто задаваемые вопросы';
+    return 'FAQ';
+  }
+
+  String get frequentlyAskedQuestions {
+    if (_isKz) return 'Жиі қойылатын сұрақтар';
+    if (_isRu) return 'Часто задаваемые вопросы';
+    return 'Frequently Asked Questions';
+  }
+
+  // Release 2 - Profile Photo & Enhancements
+  String get uploadPhotoLabel {
+    if (_isKz) return 'Фото жүктеу';
+    if (_isRu) return 'Загрузить фото';
+    return 'Upload Photo';
+  }
+
+  String get noAwards {
+    if (_isKz) return 'Әлі ешбір сыйлықтар жоқ';
+    if (_isRu) return 'Пока нет наград';
+    return 'No awards yet';
+  }
+
+  String get addAward {
+    if (_isKz) return 'Сыйлық қосу';
+    if (_isRu) return 'Добавить награду';
+    return 'Add Award';
+  }
+
+  String get awardName {
+    if (_isKz) return 'Сыйлықтың атауы';
+    if (_isRu) return 'Название награды';
+    return 'Award name';
+  }
+
+  String get noChildren {
+    if (_isKz) return 'Әлі балалар жоқ';
+    if (_isRu) return 'Пока нет детей';
+    return 'No children yet';
+  }
+
+  String get addChild {
+    if (_isKz) return 'Балаларды қосу';
+    if (_isRu) return 'Добавить ребенка';
+    return 'Add Child';
+  }
+
+  String get childName {
+    if (_isKz) return 'Ребенок атауы';
+    if (_isRu) return 'Имя ребенка';
+    return 'Child name';
+  }
+
+  String get certificateNumber {
+    if (_isKz) return 'Сертификат номері';
+    if (_isRu) return 'Номер сертификата';
+    return 'Certificate number';
+  }
+
+  String get addButton {
+    if (_isKz) return 'Қосу';
+    if (_isRu) return 'Добавить';
+    return 'Add';
+  }
+
+  String get photoUploadFailed {
+    if (_isKz) return 'Фото жүктеу сәтсіз аяқталды';
+    if (_isRu) return 'Не удалось загрузить фото';
+    return 'Photo upload failed';
+  }
+
+  // Contact Card & Department
+  String get callButton {
+    if (_isKz) return 'ҚОҢЫРАУ';
+    if (_isRu) return 'ЗВОНОК';
+    return 'CALL';
+  }
+
+  String get hrDepartment {
+    if (_isKz) return 'HR бөлімі';
+    if (_isRu) return 'Отдел HR';
+    return 'HR Department';
+  }
+
+  String get itSupport {
+    if (_isKz) return 'IT қолдау';
+    if (_isRu) return 'IT поддержка';
+    return 'IT Support';
+  }
+
+  String get financeDepartment {
+    if (_isKz) return 'Қаржы бөлімі';
+    if (_isRu) return 'Финансовый отдел';
+    return 'Finance Department';
+  }
+
+  String get securityDepartment {
+    if (_isKz) return 'Қауіпсіздік бөлімі';
+    if (_isRu) return 'Отдел безопасности';
+    return 'Security Department';
+  }
+
+  String get facilityManagement {
+    if (_isKz) return 'Объект басқармасы';
+    if (_isRu) return 'Управление имуществом';
+    return 'Facility Management';
+  }
+
+  String get legalDepartment {
+    if (_isKz) return 'Құқық бөлімі';
+    if (_isRu) return 'Юридический отдел';
+    return 'Legal Department';
+  }
+
+  // Additional Localization
+  String get birthDateLabel {
+    if (_isKz) return 'Туған күні';
+    if (_isRu) return 'Дата рождения';
+    return 'Birth Date';
+  }
+
+  String get deleteButton {
+    if (_isKz) return 'Өшіру';
+    if (_isRu) return 'Удалить';
+    return 'Delete';
+  }
+
+  String get onlineChatSubtitle {
+    if (_isKz) return 'Қызмет көрсету тағдырын қамтамасыз ету';
+    if (_isRu) return 'Связь со службой обеспечения сотрудников';
+    return 'Connect with employee support service';
+  }
+
+  String get hrRecruitment {
+    if (_isKz) return 'HR, жалдау, қызметтік қарым-қатынас';
+    if (_isRu) return 'HR, рекрутмент, отношения с сотрудниками';
+    return 'Human Resources, recruitment, employee relations';
+  }
+
+  String get itIssues {
+    if (_isKz) return 'Техникалық мәселелер, бағдарлама, аппараттық қолдау';
+    if (_isRu) return 'Технические проблемы, программное обеспечение, поддержка оборудования';
+    return 'Technical issues, software, hardware support';
+  }
+
+  String get payrollFinance {
+    if (_isKz) return 'Ай жалақы, ақшалау, қаржылық сұрақтар';
+    if (_isRu) return 'Зарплата, счета, финансовые вопросы';
+    return 'Payroll, invoices, financial queries';
+  }
+
+  String get buildingAccess {
+    if (_isKz) return 'Құрылым қолжетімсіздігі, қауіпсіздік, төтенше жағдайлар';
+    if (_isRu) return 'Доступ к зданию, безопасность, чрезвычайные ситуации';
+    return 'Building access, safety, emergencies';
+  }
+
+  String get maintenanceRepairs {
+    if (_isKz) return 'Техническое обслуживание, ремонт, офисные расходники';
+    if (_isRu) return 'Обслуживание, ремонт, офисные принадлежности';
+    return 'Maintenance, repairs, office supplies';
+  }
+
+  String get legalAdvice {
+    if (_isKz) return 'Құқықтық кеңес, келісім, сәйкестік';
+    if (_isRu) return 'Юридическая консультация, контракты, соответствие';
+    return 'Legal advice, contracts, compliance';
+  }
+
+  // Notification Details Localization
+  String get notificationTitle {
+    if (_isKz) return 'Ескертпе';
+    if (_isRu) return 'Уведомление';
+    return 'Notification';
+  }
+
+  String get dateLabel {
+    if (_isKz) return 'Күні';
+    if (_isRu) return 'Дата';
+    return 'Date';
+  }
+
+  String get timeLabel {
+    if (_isKz) return 'Уақыты';
+    if (_isRu) return 'Время';
+    return 'Time';
+  }
+
+  String get fromLabel {
+    if (_isKz) return 'Бастап';
+    if (_isRu) return 'От';
+    return 'From';
+  }
+
+  String get titleLabel {
+    if (_isKz) return 'Атауы';
+    if (_isRu) return 'Название';
+    return 'Title';
+  }
+
+  String get descriptionLabel {
+    if (_isKz) return 'Сипаттамасы';
+    if (_isRu) return 'Описание';
+    return 'Description';
+  }
+
+  String get typeLabel {
+    if (_isKz) return 'Түрі';
+    if (_isRu) return 'Тип';
+    return 'Type';
+  }
+
+  // Company Screen Localization
+  String get applyNow {
+    if (_isKz) return 'Өтінім беру';
+    if (_isRu) return 'Подать заявку';
+    return 'Apply Now';
+  }
+
+  String get applyForThisVacancy {
+    if (_isKz) return 'Бұл бағыттамаға өтінім беру';
+    if (_isRu) return 'Подать заявку на эту вакансию';
+    return 'Apply for this vacancy';
+  }
+
+  String get memo {
+    if (_isKz) return 'Есептілік';
+    if (_isRu) return 'Памятка';
+    return 'Memo';
+  }
+
+  String get trainingMaterial {
+    if (_isKz) return 'Оқу материалы';
+    if (_isRu) return 'Учебный материал';
+    return 'Training Material';
+  }
+
+  String get openingMessage {
+    if (_isKz) return 'Ашусысына өтінім беру';
+    if (_isRu) return 'Открытие';
+    return 'Opening';
+  }
+
+  String get viewMemo {
+    if (_isKz) return 'Есептіліктің көрулуі';
+    if (_isRu) return 'Просмотреть памятку';
+    return 'View Memo';
+  }
+
+  String get downloadMaterial {
+    if (_isKz) return 'Материалды жүктеп алу';
+    if (_isRu) return 'Скачать материал';
+    return 'Download Material';
+  }
+
+  // Additional Message Localization
+  String get registrationSuccessful {
+    if (_isKz) return 'Тіркеу сәтті аяқталды!';
+    if (_isRu) return 'Регистрация успешна!';
+    return 'Registration successful!';
+  }
+
+  String get errorSavingToFirebase {
+    if (_isKz) return 'Firebase\'ке сохранение қатесі';
+    if (_isRu) return 'Ошибка сохранения в Firebase';
+    return 'Error saving to Firebase';
+  }
+
+  String get failedToSendMessage {
+    if (_isKz) return 'Хабарлама жіберу сәтсіз';
+    if (_isRu) return 'Не удалось отправить сообщение';
+    return 'Failed to send message';
+  }
+
+  String get testFirebase {
+    if (_isKz) return 'Firebase сынау';
+    if (_isRu) return 'Тест Firebase';
+    return 'Test Firebase';
+  }
 }
 

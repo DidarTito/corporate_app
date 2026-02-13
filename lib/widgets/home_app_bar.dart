@@ -3,10 +3,12 @@ import '../utils/constants.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onNotificationPressed;
-  
+  final VoidCallback? onSearchPressed;
+
   const HomeAppBar({
     super.key,
     this.onNotificationPressed,
+    this.onSearchPressed,
   });
   
   @override
@@ -29,8 +31,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             style: theme.appBarTheme.titleTextStyle,
           ),
           const Spacer(),
+          if (onSearchPressed != null)
+            IconButton(
+              icon: Icon(Icons.search, color: theme.appBarTheme.iconTheme?.color ?? theme.appBarTheme.foregroundColor),
+              onPressed: onSearchPressed,
+            ),
           IconButton(
-            icon: Icon(Icons.notifications_outlined, 
+            icon: Icon(Icons.notifications_outlined,
                 color: theme.appBarTheme.iconTheme?.color ?? theme.appBarTheme.foregroundColor),
             onPressed: onNotificationPressed,
           ),
